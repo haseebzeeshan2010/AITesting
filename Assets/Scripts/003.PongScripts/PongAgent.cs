@@ -20,9 +20,23 @@ public class PongAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.localPosition);
-        sensor.AddObservation(targetTransform.localPosition);
-        sensor.AddObservation(targetRigidbody.linearVelocity);
+        Vector3 localpos = transform.localPosition;
+        sensor.AddObservation(localpos.x);
+        sensor.AddObservation(localpos.z);
+
+        Vector3 targetPos = targetTransform.localPosition;
+        sensor.AddObservation(targetPos.x);
+        sensor.AddObservation(targetPos.z);
+
+        Vector3 targetVelocity = targetRigidbody.linearVelocity;
+        sensor.AddObservation(targetVelocity.z);
+        sensor.AddObservation(targetVelocity.x);
+
+        Vector3 relativePos = targetPos - localpos;
+        sensor.AddObservation(relativePos.x);
+        sensor.AddObservation(relativePos.z);
+
+
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -61,6 +75,7 @@ public class PongAgent : Agent
 
     public void Punish()
     {
+        AddReward(-1.0f);
         EndEpisode();
         Debug.Log("Punish Called");
     }
