@@ -11,11 +11,23 @@ public class PongAgent : Agent
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float launchForce = 15f;
 
+    [SerializeField] private bool playerEnabled = false;
+
     public override void OnEpisodeBegin()
     {
-        targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, launchForce);
-        targetTransform.localPosition = new Vector3(Random.Range(-7f, 7f), 0f, 17.25f);
-        transform.localPosition = new Vector3(0f, 0f, 0f);
+        // targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, launchForce);
+
+        if (playerEnabled)
+        {
+            targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, -launchForce);
+            targetTransform.localPosition = new Vector3(0, 0f, 12.25f);
+        }
+        else
+        {
+            targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, launchForce);
+            targetTransform.localPosition = new Vector3(Random.Range(-7f, 7f), 0f, 17.25f);
+        }
+        transform.localPosition = new Vector3(0f, 0f, transform.localPosition.z);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -54,7 +66,7 @@ public class PongAgent : Agent
     {
         ActionSegment<int> discreteActions = actionsOut.DiscreteActions;
         // Use input axis to determine discrete action.
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float horizontalInput = -Input.GetAxisRaw("Horizontal");
 
         if (horizontalInput < 0)
             discreteActions[0] = 0; // move left
