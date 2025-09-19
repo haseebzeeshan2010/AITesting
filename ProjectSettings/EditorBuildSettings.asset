@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/001.ReachTarget.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/003.Pong.unity
     guid: 25eb1af8b28a8e147910a5ec4cb217e5
+  - enabled: 1
+    path: Assets/Scenes/004.Pongv2.unity
+    guid: a3569b474a4248c46bb1d70ac00419ea
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

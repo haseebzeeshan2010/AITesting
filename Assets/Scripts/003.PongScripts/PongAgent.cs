@@ -2,9 +2,11 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting;
 
 public class PongAgent : Agent
 {
+    [SerializeField] private Transform enemyTransform;
     [SerializeField] private Rigidbody agentRigidbody;
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Rigidbody targetRigidbody;
@@ -13,6 +15,7 @@ public class PongAgent : Agent
 
     [SerializeField] private bool playerEnabled = false;
 
+    
     public override void OnEpisodeBegin()
     {
         // targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, launchForce);
@@ -24,10 +27,15 @@ public class PongAgent : Agent
         }
         else
         {
-            targetRigidbody.linearVelocity = new Vector3(Random.Range(-launchForce, launchForce), 0, launchForce);
-            targetTransform.localPosition = new Vector3(Random.Range(-7f, 7f), 0f, 17.25f);
+            // Set a random direction in the horizontal (x-z) plane with a fixed magnitude (launchForce)
+            float angle = Random.Range(0f, 2f * Mathf.PI);
+            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+            targetRigidbody.linearVelocity = direction * launchForce;
+            targetTransform.localPosition = new Vector3(Random.Range(-7f, 7f), 0f, 12.25f);
         }
         transform.localPosition = new Vector3(0f, 0f, transform.localPosition.z);
+
+
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -48,7 +56,22 @@ public class PongAgent : Agent
         sensor.AddObservation(relativePos.x);
         sensor.AddObservation(relativePos.z);
 
+        //FOR v2 version ONLY
+        if (enemyTransform != null)
+        {
+            Vector3 enemyPos = enemyTransform.localPosition;
+            sensor.AddObservation(enemyPos.x);
+            sensor.AddObservation(enemyPos.z);
 
+            Vector3 enemyRelativePos = enemyPos - localpos;
+            sensor.AddObservation(enemyRelativePos.x);
+            sensor.AddObservation(enemyRelativePos.z);
+
+            float distanceToTarget = Vector3.Distance(localpos, targetPos);
+            sensor.AddObservation(distanceToTarget);
+        }
+
+        
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -78,10 +101,17 @@ public class PongAgent : Agent
 
     private void OnTriggerEnter(Collider other)
     {
+        // Reward for hitting the ball
         if (other.TryGetComponent<Ball>(out Ball ball))
         {
             Debug.Log("Returned Ball");
-            AddReward(2.0f);
+            AddReward(0.5f);
+
+            // Additional reward for faster returns
+            if (Mathf.Abs(targetRigidbody.linearVelocity.z) > 10f)
+            {
+                AddReward(0.5f);
+            }
         }
     }
 
@@ -89,6 +119,6 @@ public class PongAgent : Agent
     {
         AddReward(-1.0f);
         EndEpisode();
-        Debug.Log("Punish Called");
+        Debug.Log("Punish Called for Agent" + gameObject.name);
     }
 }
