@@ -1,28 +1,17 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ManualDriver : MonoBehaviour
 {
-    public float driveForce = 10f;
-    public float turnTorque = 5f;
-    private Rigidbody rb;
-
+    [SerializeField] Rigidbody carRigidbody;
+    [SerializeField] float gravityAdder = -9.81f;
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        // Initialization logic can be added here if needed.
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        // Determine forward/backward input using arrow keys or WASD
-        float moveInput = Input.GetAxis("Vertical");
-        float turnInput = Input.GetAxis("Horizontal");
-
-        // Apply forward/backward force
-        Vector3 force = transform.right * -moveInput * driveForce;
-        rb.AddForce(force, ForceMode.Force);
-
-        // Apply turning torque around the y-axis
-        Vector3 torque = transform.forward * turnInput * turnTorque;
-        rb.AddTorque(torque, ForceMode.Force);
+        carRigidbody.AddForce(Vector3.down * gravityAdder, ForceMode.Acceleration);
     }
 }
