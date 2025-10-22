@@ -6,6 +6,9 @@ public class Wheel : MonoBehaviour
     [SerializeField] Rigidbody carRigidbody;
     [SerializeField] float strength = 1000;
     [SerializeField] float dampingCoefficient = 0.7f;
+    [SerializeField] float tireGripFactor = 0.5f;
+
+    [SerializeField] float tireMass = 20f;
 
     public float restSuspensionDistance = 0.3f;
     public Vector3 tireWorldVel = Vector3.zero;
@@ -38,6 +41,16 @@ public class Wheel : MonoBehaviour
 
             // Apply both forces
             carRigidbody.AddForceAtPosition(springForce + dampingForce, transform.position);
+
+
+
+            // Lateral grip force
+            Vector3 steeringDirection = transform.forward;
+            float steeringVel = Vector3.Dot(steeringDirection, tireWorldVel);
+            float desiredVelChange = -steeringVel * tireGripFactor;
+            float desiredAccel = desiredVelChange / Time.fixedDeltaTime;
+            carRigidbody.AddForceAtPosition(steeringDirection * tireMass * desiredAccel, transform.position);
+
         }
     }
 }
