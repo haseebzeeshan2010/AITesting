@@ -23,7 +23,7 @@ public class Wheel : MonoBehaviour
     void FixedUpdate()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, restSuspensionDistance))
+        if (Physics.Raycast(transform.position, -transform.up, out hit, restSuspensionDistance))
         {
             float distance = hit.distance;
 
