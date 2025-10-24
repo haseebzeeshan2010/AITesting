@@ -5,7 +5,7 @@ public class WheelMesh : MonoBehaviour
 {
     [SerializeField] GameObject wheelObject;
     public float restSuspensionDistance = 0.3f;
-
+    public float suspensionLerpSpeed = 0.5f;
     public float offsetY = 0.05f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,7 +23,7 @@ public class WheelMesh : MonoBehaviour
             // Convert hit.point from world space to local space relative to the current transform
             Vector3 localHitPoint = transform.InverseTransformPoint(hit.point);
             Vector3 tireRawPos = localHitPoint + (Vector3.up + new Vector3(0, offsetY, 0));
-            wheelObject.transform.localPosition = Vector3.Lerp(wheelObject.transform.localPosition, tireRawPos, 0.5f);
+            wheelObject.transform.localPosition = Vector3.Lerp(wheelObject.transform.localPosition, tireRawPos, suspensionLerpSpeed * Time.fixedDeltaTime);
         }
     }
 }

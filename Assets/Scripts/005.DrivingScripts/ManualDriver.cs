@@ -3,15 +3,18 @@ using UnityEngine.InputSystem;
 
 public class ManualDriver : MonoBehaviour
 {
-    [SerializeField] Rigidbody carRigidbody;
-    [SerializeField] float gravityAdder = -9.81f;
-    void Start()
-    {
-        // Initialization logic can be added here if needed.
-    }
-
+    [SerializeField] private WheelDrive[] steeringWheels;
+    [SerializeField] private WheelDrive[] driveWheels;
+    
     void FixedUpdate()
     {
-        carRigidbody.AddForce(Vector3.down * gravityAdder, ForceMode.Acceleration);
+        float accelerationInput = Input.GetAxis("Vertical");
+        float steerInput = Input.GetAxis("Horizontal");
+        
+        foreach (WheelDrive wheel in steeringWheels)
+            wheel.Steer(steerInput);
+        
+        foreach (WheelDrive wheel in driveWheels)
+            wheel.Accelerate(accelerationInput);
     }
 }

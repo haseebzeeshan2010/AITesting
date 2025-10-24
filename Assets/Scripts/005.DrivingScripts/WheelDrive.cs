@@ -20,22 +20,47 @@ public class WheelDrive : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    public void Accelerate(float accelerationInput)
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, restSuspensionDistance))
         {
-            Vector3 forwardDirection = -transform.right;
 
-            // Calculate normalized speed (0 to 1)
-            normalizedSpeed = Mathf.Clamp01(carRigidbody.linearVelocity.magnitude / maxVelocity);
-            
-            // Adjust strength using the acceleration curve
-            float curveMultiplier = accelerationCurve.Evaluate(normalizedSpeed);
-                
+            if (accelerationInput > 0)
+            {
+                // Apply force when accelerating
+                Vector3 forwardDirection = -transform.right;
+
+                // Calculate normalized speed (0 to 1)
+                normalizedSpeed = Mathf.Clamp01(carRigidbody.linearVelocity.magnitude / maxVelocity);
+
+                // Adjust strength using the acceleration curve
+                float curveMultiplier = accelerationCurve.Evaluate(normalizedSpeed);
+
                 // Apply force scaled by the multiplier
                 carRigidbody.AddForceAtPosition(forwardDirection * maxStrength * curveMultiplier, transform.position);
             }
+            else if (accelerationInput < 0)
+            {
+                // Apply force when braking/reversing
+                Vector3 backwardDirection = transform.right;
+
+                // Calculate normalized speed (0 to 1)
+                normalizedSpeed = Mathf.Clamp01(carRigidbody.linearVelocity.magnitude / maxVelocity);
+
+                // Adjust strength using the acceleration curve
+                float curveMultiplier = accelerationCurve.Evaluate(normalizedSpeed);
+
+                // Apply force scaled by the multiplier
+                carRigidbody.AddForceAtPosition(backwardDirection * maxStrength * curveMultiplier, transform.position);
+            }
+            
+        }
+    }
+
+    public void Steer(float steerInput)
+    {
+        transform.localRotation = Quaternion.Euler(0, steerInput * 30f, 0);
     }
 
 }
