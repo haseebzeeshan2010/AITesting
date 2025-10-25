@@ -17,13 +17,19 @@ public class WheelMesh : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        Vector3 tireRawPos;
         RaycastHit hit;
         if (Physics.Raycast(transform.position, -transform.up, out hit, restSuspensionDistance))
         {
             // Convert hit.point from world space to local space relative to the current transform
             Vector3 localHitPoint = transform.InverseTransformPoint(hit.point);
-            Vector3 tireRawPos = localHitPoint + (Vector3.up + new Vector3(0, offsetY, 0));
-            wheelObject.transform.localPosition = Vector3.Lerp(wheelObject.transform.localPosition, tireRawPos, suspensionLerpSpeed * Time.fixedDeltaTime);
+            tireRawPos = localHitPoint + (Vector3.up + new Vector3(0, offsetY, 0));
+            // Debug.Log(tireRawPos.y);
         }
+        else
+        {
+            tireRawPos = 0 * Vector3.up + new Vector3(0, offsetY - 0.5f, 0);
+        }
+        wheelObject.transform.localPosition = Vector3.Lerp(wheelObject.transform.localPosition, tireRawPos, suspensionLerpSpeed * Time.fixedDeltaTime);
     }
 }

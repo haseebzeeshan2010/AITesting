@@ -28,16 +28,16 @@ public class Wheel : MonoBehaviour
             float distance = hit.distance;
 
             // Calculate spring force
-            Vector3 springForce = Vector3.up * (restSuspensionDistance - distance) * strength;
+            Vector3 springForce = transform.up * (restSuspensionDistance - distance) * strength;
 
             // Get the velocity of the wheel at the contact point
             tireWorldVel = carRigidbody.GetPointVelocity(transform.position);
 
             // Project the velocity onto the spring axis (upward direction)
-            float relativeVelocity = Vector3.Dot(tireWorldVel, Vector3.up);
+            float relativeVelocity = Vector3.Dot(tireWorldVel, transform.up);
 
             // Calculate damping force proportional to the relative velocity
-            Vector3 dampingForce = -relativeVelocity * dampingCoefficient * Vector3.up;
+            Vector3 dampingForce = -relativeVelocity * dampingCoefficient * transform.up;
 
             // Apply both forces
             carRigidbody.AddForceAtPosition(springForce + dampingForce, transform.position);
