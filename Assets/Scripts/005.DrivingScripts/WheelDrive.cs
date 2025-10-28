@@ -13,6 +13,8 @@ public class WheelDrive : MonoBehaviour
     public float normalizedSpeed = 0f;
     public Vector3 tireWorldVel = Vector3.zero;
 
+    [SerializeField] private float maxSteerAngle = 30f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -60,7 +62,8 @@ public class WheelDrive : MonoBehaviour
 
     public void Steer(float steerInput)
     {
-        transform.localRotation = Quaternion.Euler(0, steerInput * 30f, 0);
+        float steerAngle = steerInput * maxSteerAngle;
+        transform.localRotation = Quaternion.Euler(0, steerAngle, 0);
     }
 
 }
