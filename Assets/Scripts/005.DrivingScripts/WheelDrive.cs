@@ -8,6 +8,7 @@ public class WheelDrive : MonoBehaviour
     [SerializeField] float maxVelocity = 10f;
 
     [SerializeField] private AnimationCurve accelerationCurve;
+    [SerializeField] private AnimationCurve decelerationCurve;
 
     public float restSuspensionDistance = 0.3f;
     public float normalizedSpeed = 0f;
@@ -50,8 +51,8 @@ public class WheelDrive : MonoBehaviour
                 // Calculate normalized speed (0 to 1)
                 normalizedSpeed = Mathf.Clamp01(carRigidbody.linearVelocity.magnitude / maxVelocity);
 
-                // Adjust strength using the acceleration curve
-                float curveMultiplier = accelerationCurve.Evaluate(normalizedSpeed);
+                // Adjust strength using the deceleration curve
+                float curveMultiplier = decelerationCurve.Evaluate(normalizedSpeed);
 
                 // Apply force scaled by the multiplier
                 carRigidbody.AddForceAtPosition(backwardDirection * maxStrength * curveMultiplier, transform.position);
